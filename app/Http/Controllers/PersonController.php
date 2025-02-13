@@ -21,16 +21,13 @@ class PersonController extends Controller
 
         return response()->json($persons, 200);
     }
-    public function indexpagination(Request $request)
+
+public function indexpagination(Request $request)
 {
-    // Obtener el número de registros por página, o por defecto 5
     $perPage = $request->get('perPage', 5);
+    $persons = Person::paginate($perPage); // Esto devuelve un objeto de paginación
 
-    // Obtener las personas paginadas
-    $persons = Person::paginate($perPage);
-
-    // Devolver la respuesta en formato JSON (esto es importante para el frontend)
-    return response()->json($persons);
+    return response()->json($persons); // Asegúrate de que esto devuelva un objeto de paginación
 }
 
 

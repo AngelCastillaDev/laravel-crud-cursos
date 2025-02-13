@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
     const personTbody = document.getElementById('person-tbody');
-    const paginationContainer = document.getElementById('pagination-container');  // Contenedor para los botones de paginación
     const createPersonButton = document.getElementById('create-person-button');
     const createPersonModal = document.getElementById('create-person-modal');
     const closeModalButton = document.getElementById('close-modal');
@@ -8,17 +7,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const personIdInput = document.getElementById('person-id');
     const modalTitle = document.getElementById('modal-title');
     const submitButton = document.getElementById('submit-button');
-    
-    let currentPage = 1;  // Página actual
 
     // Función para cargar la lista de personas
-    function loadPersons(page = 1) {
-        fetch(`https://8000-idx-crud-1739237235987.cluster-duylic2g3fbzerqpzxxbw6helm.cloudworkstations.dev/api/persons/paginated?page=${page}`)
+    function loadPersons() {
+        fetch('https://8000-idx-crud-1739237235987.cluster-duylic2g3fbzerqpzxxbw6helm.cloudworkstations.dev/api/persons')
             .then(response => response.json())
             .then(data => {
                 personTbody.innerHTML = ''; // Limpiar el tbody
-                if (Array.isArray(data.data) && data.data.length > 0) {
-                    data.data.forEach(person => {
+                if (Array.isArray(data) && data.length > 0) {
+                    data.forEach(person => {
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
                             <td class="px-6 py-4 whitespace-nowrap text-gray-400 dark:text-gray-300">${person.first_name}</td>
@@ -37,53 +34,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     tr.innerHTML = '<td colspan="5" class="px-6 py-4 text-center text-gray-500">No hay personas registradas</td>';
                     personTbody.appendChild(tr);
                 }
-
-                // Mostrar los botones de paginación
-                showPagination(data);
             })
             .catch(error => {
                 console.error('Error fetching person data:', error);
             });
-    }
-
-    // Función para mostrar los botones de paginación
-    function showPagination(data) {
-        paginationContainer.innerHTML = '';  // Limpiar la paginación
-
-        const prevPage = data.prev_page_url;
-        const nextPage = data.next_page_url;
-        const currentPage = data.current_page;
-        const totalPages = data.last_page;
-
-        // Botón "Anterior"
-        if (prevPage) {
-            const prevButton = document.createElement('button');
-            prevButton.textContent = '« Anterior';
-            prevButton.classList.add('pagination-button');
-            prevButton.onclick = () => loadPersons(currentPage - 1);
-            paginationContainer.appendChild(prevButton);
-        }
-
-        // Botones de páginas
-        for (let i = 1; i <= totalPages; i++) {
-            const pageButton = document.createElement('button');
-            pageButton.textContent = i;
-            pageButton.classList.add('pagination-button');
-            if (i === currentPage) {
-                pageButton.classList.add('active');  // Página actual
-            }
-            pageButton.onclick = () => loadPersons(i);
-            paginationContainer.appendChild(pageButton);
-        }
-
-        // Botón "Siguiente"
-        if (nextPage) {
-            const nextButton = document.createElement('button');
-            nextButton.textContent = 'Siguiente »';
-            nextButton.classList.add('pagination-button');
-            nextButton.onclick = () => loadPersons(currentPage + 1);
-            paginationContainer.appendChild(nextButton);
-        }
     }
 
     // Cargar la lista de personas al inicio
@@ -159,11 +113,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(response => response.json())
                 .then(person => {
                     // Rellenar el formulario con los datos de la persona
-                    personIdInput.value = person.person.id; // Establecer el ID
-                    createPersonForm.elements['first_name'].value = person.person.first_name;
-                    createPersonForm.elements['last_name'].value = person.person.last_name;
-                    createPersonForm.elements['email'].value = person.person.email;
-                    createPersonForm.elements['cell_phone'].value = person.person.cell_phone;
+                    personIdInput.value = person.id; // Establecer el ID
+                    createPersonForm.elements['first_name'].value = person.first_name;
+                    createPersonForm.elements['last_name'].value = person.last_name;
+                    createPersonForm.elements['email'].value = person.email;
+                    createPersonForm.elements['cell_phone'].value = person.cell_phone;
 
                     // Cambiar el título y el texto del botón
                     modalTitle.textContent = 'Editar Persona';
@@ -189,5 +143,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Error deleting person:', error);
             });
         }
+    });
+
+    // Exportar a Excel
+    document.getElementById('export-excel-button').addEventListener('click', () => {
+        const rows = [];
+        const headers = ["Nombre", "Apellido", "Correo Electrónico", "Número de Celular"];
+        rows.push(headers);
+
+        const personRows = Array.from(personTbody.querySelectorAll('tr')).map(tr => {
+            const cells = tr.querySelectorAll('td');
+            return Array.from(cells).slice(0, 4).map(td => td.textContent);
+        });
+
+        rows.push(...personRows);
+
+        const ws = XLSX.utils.aoa_to_sheet(rows);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Personas");
+
+        // Exportar el archivo
+        XLSX.writeFile(wb, "personas.xlsx");
     });
 });

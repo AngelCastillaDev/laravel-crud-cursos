@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PersonController;
+use App\Http\Livewire\Person;
 
 Route::get('/persons', [PersonController::class, 'index']);
 Route::get('/persons/paginated', [PersonController::class, 'indexpagination']);
