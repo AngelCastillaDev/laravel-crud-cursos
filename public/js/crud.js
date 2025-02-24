@@ -113,11 +113,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(response => response.json())
                 .then(person => {
                     // Rellenar el formulario con los datos de la persona
-                    personIdInput.value = person.id; // Establecer el ID
-                    createPersonForm.elements['first_name'].value = person.first_name;
-                    createPersonForm.elements['last_name'].value = person.last_name;
-                    createPersonForm.elements['email'].value = person.email;
-                    createPersonForm.elements['cell_phone'].value = person.cell_phone;
+                    personIdInput.value = person.person.id; // Establecer el ID
+                    createPersonForm.elements['first_name'].value = person.person.first_name;
+                    createPersonForm.elements['last_name'].value = person.person.last_name;
+                    createPersonForm.elements['email'].value = person.person.email;
+                    createPersonForm.elements['cell_phone'].value = person.person.cell_phone;
 
                     // Cambiar el título y el texto del botón
                     modalTitle.textContent = 'Editar Persona';
