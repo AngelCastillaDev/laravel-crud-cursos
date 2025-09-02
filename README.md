@@ -28,7 +28,4 @@ La base de datos está implementada con **MySQL (phpMyAdmin)**.
 - **Blade (motor de plantillas)**  
 - **Bootstrap / Tailwind (para el frontend, según lo implementado)**  
 
----
-
-## 📂 Estructura del proyecto
 
