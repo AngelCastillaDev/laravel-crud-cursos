@@ -47,9 +47,9 @@ return [
             'url' => env('DB_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'crud'), // Cambia 'laravel' por 'defaultdb'
-            'username' => env('DB_USERNAME', 'avnadmin'), // Cambia 'root' por 'avnadmin'
-            'password' => env('DB_PASSWORD', 'AVNS_usXuShM-Qv_9L56caQp'), // Cambia la contraseña
+            'database' => env('DB_DATABASE', null), // Cambia 'laravel' por 'defaultdb'
+            'username' => env('DB_USERNAME', null), // Cambia 'root' por 'avnadmin'
+            'password' => env('DB_PASSWORD', null), // Cambia la contraseña
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => env('DB_CHARSET', 'utf8mb4'),
             'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
